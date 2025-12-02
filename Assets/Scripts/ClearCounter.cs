@@ -1,18 +1,10 @@
 using UnityEngine;
 
-public class ClearCounter : MonoBehaviour, IKitchenObjectParent
+public class ClearCounter : BaseCounter
 {
-    [SerializeField]
-    KitchenObjectSO kitchenObjectSO;
-
-    [SerializeField]
-    Transform counterTopPoint;
-
-    KitchenObject kitchenObject;
-
-    public void Interact(IKitchenObjectParent parent)
+    public override void Interact(IKitchenObjectParent parent)
     {
-        if (kitchenObject == null)
+        if (!HasKitchenObject())
         {
             // If parent has object, drop it here
             if (parent.HasKitchenObject())
@@ -20,40 +12,10 @@ public class ClearCounter : MonoBehaviour, IKitchenObjectParent
                 var droppedObject = parent.GetKitchenObject();
                 droppedObject.SetParent(this);
             }
-            else
-            {
-                Transform kitchenObjectTransform = Instantiate(kitchenObjectSO.prefab, counterTopPoint);
-                kitchenObjectTransform.GetComponent<KitchenObject>().SetParent(this);
-            }
         }
-        else
+        else if (!parent.HasKitchenObject())
         {
-            kitchenObject.SetParent(parent);
+            GetKitchenObject().SetParent(parent);
         }
-    }
-
-    public Transform GetKitchenObjectFollowTransform()
-    {
-        return counterTopPoint;
-    }
-
-    public void SetKitchenObject(KitchenObject kitchenObject)
-    {
-        this.kitchenObject = kitchenObject;
-    }
-
-    public KitchenObject GetKitchenObject()
-    {
-        return kitchenObject;
-    }
-
-    public void ClearKitchenObject()
-    {
-        kitchenObject = null;
-    }
-
-    public bool HasKitchenObject()
-    {
-        return kitchenObject != null;
     }
 }
