@@ -42,11 +42,17 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     void Start()
     {
         gameInput.OnInteractAction += GameInputOnOnInteractAction;
+        gameInput.OnInteractAlternateAction += GameInputOnOnInteractAlternateAction;
     }
 
     void GameInputOnOnInteractAction(object sender, EventArgs e)
     {
         selectedCounter?.Interact(this);
+    }
+
+    void GameInputOnOnInteractAlternateAction(object sender, EventArgs e)
+    {
+        selectedCounter?.InteractAlternate(this);
     }
 
     private void Update()
@@ -97,7 +103,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         {
             // Attempt just X movement
             var moveX = new Vector3(moveDir.x, 0, 0).normalized;
-            willCollide = Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveX, moveDistance);
+            willCollide = moveDir.x == 0 || Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveX, moveDistance);
             if (!willCollide)
             {
                 moveDir = moveX;
@@ -106,7 +112,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
             {
                 // Attempt just Z movement
                 var moveZ = new Vector3(0, 0, moveDir.z).normalized;
-                willCollide = Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveZ, moveDistance);
+                willCollide = moveDir.z == 0 || Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveZ, moveDistance);
                 if (!willCollide)
                 {
                     moveDir = moveZ;

@@ -18,4 +18,9 @@ public class ClearCounter : BaseCounter
             GetKitchenObject().SetParent(parent);
         }
     }
+
+    public override void InteractAlternate(IKitchenObjectParent parent)
+    {
+        // Empty on purpose
+    }
 }

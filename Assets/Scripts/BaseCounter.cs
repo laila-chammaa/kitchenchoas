@@ -8,6 +8,7 @@ public abstract class BaseCounter : MonoBehaviour, IKitchenObjectParent
     private KitchenObject kitchenObject;
 
     public abstract void Interact(IKitchenObjectParent parent);
+    public abstract void InteractAlternate(IKitchenObjectParent parent);
 
     public Transform GetKitchenObjectFollowTransform()
     {
