@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class ProgressBarUI : MonoBehaviour
 {
     [SerializeField]
-    CuttingCounter cuttingCounter;
+    GameObject counterWithProgress;
 
     [SerializeField]
     Image barImage;
@@ -14,15 +14,20 @@ public class ProgressBarUI : MonoBehaviour
     {
         barImage.fillAmount = 0;
         Hide();
-        cuttingCounter.OnCuttingProgressChanged += CuttingCounterOnOnCuttingProgressChanged;
+
+        var iHasProgress = counterWithProgress.GetComponent<IHasProgress>();
+        if (iHasProgress == null)
+            return;
+
+        iHasProgress.OnProgressChanged += OnProgressChanged;
     }
 
-    void CuttingCounterOnOnCuttingProgressChanged(object sender, CuttingCounter.OnCuttingProgressChangedEventArgs e)
+    void OnProgressChanged(object sender, IHasProgress.OnProgressChangedEventArgs e)
     {
-        if (e.progressNormalized > 0)
-            Show();
-        else
+        if (e.progressNormalized is 0 or 1)
             Hide();
+        else
+            Show();
 
         barImage.fillAmount = e.progressNormalized;
     }

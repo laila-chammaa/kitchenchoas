@@ -1,17 +1,12 @@
 using System;
 using UnityEngine;
 
-public class CuttingCounter : BaseCounter
+public class CuttingCounter : BaseCounter, IHasProgress
 {
+    public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
+
     public event EventHandler OnPlayerCutObject;
-    public event EventHandler<OnCuttingProgressChangedEventArgs> OnCuttingProgressChanged;
-
-    public class OnCuttingProgressChangedEventArgs : EventArgs
-    {
-        public float progressNormalized;
-    }
-
-    const int cuttingProgressMax = 3;
+    const int k_CuttingProgressMax = 3;
     int cuttingProgress;
 
     public override void Interact(IKitchenObjectParent parent)
@@ -31,12 +26,16 @@ public class CuttingCounter : BaseCounter
 
             // Reset cutting progress on pick up
             cuttingProgress = 0;
+            OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
+            {
+                progressNormalized = 0
+            });
         }
     }
 
     public override void InteractAlternate(IKitchenObjectParent parent)
     {
-        if (cuttingProgress == cuttingProgressMax || 
+        if (cuttingProgress == k_CuttingProgressMax || 
             GetKitchenObject() == null || 
             GetKitchenObject().GetKitchenObjectSO().cutPrefab == null)
             return;
@@ -47,14 +46,14 @@ public class CuttingCounter : BaseCounter
 
         cuttingProgress++;
 
-        OnCuttingProgressChanged.Invoke(this, new OnCuttingProgressChangedEventArgs()
+        OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs()
         {
-            progressNormalized = (float)cuttingProgress/cuttingProgressMax
+            progressNormalized = (float)cuttingProgress/k_CuttingProgressMax
         });
 
-        if (cuttingProgress >= cuttingProgressMax)
+        if (cuttingProgress >= k_CuttingProgressMax)
         {
-            OnCuttingProgressChanged.Invoke(this, new OnCuttingProgressChangedEventArgs()
+            OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs()
             {
                 progressNormalized = 0 // Hide progress bar
             });
