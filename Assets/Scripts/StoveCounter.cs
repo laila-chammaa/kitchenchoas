@@ -3,68 +3,47 @@ using UnityEngine;
 
 public class StoveCounter : BaseCounter, IHasProgress
 {
-    enum FryingState
-    {
-        Uncooked,
-        Cooked,
-        Burnt
-    }
-
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
+
+    public event EventHandler<OnFryingStateChangedEventArgs> OnFryingStateChanged;
+
+    public class OnFryingStateChangedEventArgs : EventArgs
+    {
+        public bool isFrying;
+    }
 
     [SerializeField]
     FryingRecipeSO[] fryingRecipeSoArray;
 
     float fryingTimer;
-    FryingState currentState;
 
     void Update()
     {
         if (GetKitchenObject() == null)
             return;
 
-        fryingTimer += Time.deltaTime;
-
         var recipeSO = GetRecipeSO(GetKitchenObject().GetKitchenObjectSO());
-
         if (recipeSO == null)
         {
-            OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs()
-            {
-                progressNormalized = 0
-            });
+            OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs { progressNormalized = 0 });
+            OnFryingStateChanged?.Invoke(this, new OnFryingStateChangedEventArgs { isFrying = false });
             return;
         }
 
-        OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs()
-        {
-            progressNormalized = fryingTimer/recipeSO.cookingTime
-        });
+        fryingTimer += Time.deltaTime;
+
+        OnFryingStateChanged?.Invoke(this, new OnFryingStateChangedEventArgs() { isFrying = true });
+        OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
+            { progressNormalized = fryingTimer / recipeSO.cookingTime });
 
         if (fryingTimer >= recipeSO.cookingTime)
         {
             GetKitchenObject().DestroySelf();
+
             // Spawn the next state item
             KitchenObject.SpawnKitchenObject(recipeSO.output.prefab, this);
-            currentState = GetNextFryingState(currentState);
             fryingTimer = 0;
         }
-    }
-
-    static FryingState GetNextFryingState(FryingState state)
-    {
-        switch (state)
-        {
-            case FryingState.Uncooked:
-                return FryingState.Cooked;
-            case FryingState.Cooked:
-                return FryingState.Burnt;
-            case FryingState.Burnt:
-                return FryingState.Burnt;
-        }
-
-        Debug.LogWarning("Reached strange state.");
-        return FryingState.Burnt;
     }
 
     FryingRecipeSO GetRecipeSO(KitchenObjectSO input)
@@ -92,7 +71,6 @@ public class StoveCounter : BaseCounter, IHasProgress
 
                 var droppedObject = parent.GetKitchenObject();
                 droppedObject.SetParent(this);
-                // currentState = GetCurrentStateFromKitchenObject(GetKitchenObject());
             }
         }
         else if (!parent.HasKitchenObject())
@@ -101,10 +79,9 @@ public class StoveCounter : BaseCounter, IHasProgress
 
             // Reset frying timer on pick up
             fryingTimer = 0;
-            OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs()
-            {
-                progressNormalized = 0
-            });
+
+            OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs { progressNormalized = 0 });
+            OnFryingStateChanged?.Invoke(this, new OnFryingStateChangedEventArgs { isFrying = false });
         }
     }
 
@@ -115,20 +92,12 @@ public class StoveCounter : BaseCounter, IHasProgress
             if (recipe.input.objectName.Equals(kitchenObjectSo.objectName))
                 return true;
         }
+
         return false;
     }
 
-    // FryingState GetCurrentStateFromKitchenObject(KitchenObject kitchenObject)
-    // {
-    //     foreach (var recipe in fryingRecipeSoArray)
-    //     {
-    //         if (recipe.input.n)
-    //     }
-    //     kitchenObject.GetKitchenObjectSO().objectName
-    // }
-
     public override void InteractAlternate(IKitchenObjectParent parent)
     {
-        // Start cooking
+        // Empty on purpose
     }
 }

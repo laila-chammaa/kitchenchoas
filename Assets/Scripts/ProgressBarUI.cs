@@ -17,7 +17,10 @@ public class ProgressBarUI : MonoBehaviour
 
         var iHasProgress = counterWithProgress.GetComponent<IHasProgress>();
         if (iHasProgress == null)
+        {
+            Debug.LogWarning("This game object does not have need a progress bar.");
             return;
+        }
 
         iHasProgress.OnProgressChanged += OnProgressChanged;
     }
