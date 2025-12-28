@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,9 +9,18 @@ public class PlateKitchenObject : KitchenObject
     [SerializeField]
     List<KitchenObjectSO> validKitchenObjectSOArray;
 
+    [SerializeField]
+    Transform plateCompleteVisual;
+
     List<KitchenObjectSO> kitchenObjectSOArray;
 
     IKitchenObjectParent parent;
+
+    public event EventHandler<OnIngredientAddedEventArgs> OnIngredientAdded;
+    public class OnIngredientAddedEventArgs : EventArgs
+    {
+        public KitchenObjectSO kitchenObjectSo;
+    }
 
     void Awake()
     {
@@ -33,8 +43,8 @@ public class PlateKitchenObject : KitchenObject
 
         kitchenObjectSOArray.Add(kitchenObjectSo);
 
-        var ingredient = Instantiate(kitchenObjectSo.prefab, transform, true);
-        ingredient.transform.localPosition = Vector3.up * k_IngredientHeight * kitchenObjectSOArray.Count;
+        OnIngredientAdded?.Invoke(this, new OnIngredientAddedEventArgs() { kitchenObjectSo = kitchenObjectSo });
+        
         return true;
     }
 }
