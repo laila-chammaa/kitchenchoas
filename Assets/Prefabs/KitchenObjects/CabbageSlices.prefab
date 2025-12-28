@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 887063232558153788}
   - component: {fileID: 8494066019844062530}
   m_Layer: 0
-  m_Name: CabbageSliced
+  m_Name: CabbageSlices
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 948b906dea50a4971954dae105b094cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KitchenObject
-  kitchenObjectSO: {fileID: 11400000, guid: b7b1ce13ca435403e81a1fceacd3b904, type: 2}
+  kitchenObjectSO: {fileID: 11400000, guid: 6531d2d0eba244ddd8aaee962ff96afa, type: 2}
 --- !u!1001 &2962759401575376798
 PrefabInstance:
   m_ObjectHideFlags: 0

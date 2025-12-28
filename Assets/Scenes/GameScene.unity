@@ -757,7 +757,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.3907311, y: 0, z: 0, w: 0.9205049}
-  m_LocalPosition: {x: 0, y: 21, z: -21.526001}
+  m_LocalPosition: {x: 3.73, y: 21, z: -21.526001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1166,7 +1166,7 @@ Transform:
   m_GameObject: {fileID: 466492644}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: -1.526}
+  m_LocalPosition: {x: 3.73, y: 0, z: -1.526}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1239,7 +1239,7 @@ Transform:
   m_GameObject: {fileID: 497397908}
   serializedVersion: 2
   m_LocalRotation: {x: 0.3907311, y: 0, z: 0, w: 0.9205049}
-  m_LocalPosition: {x: 0, y: 21, z: -21.526001}
+  m_LocalPosition: {x: 3.73, y: 21, z: -21.526001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1365,6 +1365,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: CuttingCounter
       objectReference: {fileID: 0}
+    - target: {fileID: 8238576593308708862, guid: 6480a6fd92c454da696739554c11715a, type: 3}
+      propertyPath: cuttingRecipeSoArray.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8238576593308708862, guid: 6480a6fd92c454da696739554c11715a, type: 3}
+      propertyPath: 'cuttingRecipeSoArray.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 1fd862e8e41fb4f8cae35a789e5a8381, type: 2}
+    - target: {fileID: 8238576593308708862, guid: 6480a6fd92c454da696739554c11715a, type: 3}
+      propertyPath: 'cuttingRecipeSoArray.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 75fcbc41983d54436839103189c1ca8d, type: 2}
+    - target: {fileID: 8238576593308708862, guid: 6480a6fd92c454da696739554c11715a, type: 3}
+      propertyPath: 'cuttingRecipeSoArray.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: aed33ef86920e414f974c7539e6adb15, type: 2}
     - target: {fileID: 9037696766758607939, guid: 6480a6fd92c454da696739554c11715a, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 1

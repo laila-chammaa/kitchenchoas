@@ -46,17 +46,6 @@ public class StoveCounter : BaseCounter, IHasProgress
         }
     }
 
-    FryingRecipeSO GetRecipeSO(KitchenObjectSO input)
-    {
-        foreach (var recipe in fryingRecipeSoArray)
-        {
-            if (recipe.input.objectName == input.objectName)
-                return recipe;
-        }
-
-        return null;
-    }
-
     public override void Interact(IKitchenObjectParent parent)
     {
         if (!HasKitchenObject())
@@ -71,6 +60,19 @@ public class StoveCounter : BaseCounter, IHasProgress
 
                 var droppedObject = parent.GetKitchenObject();
                 droppedObject.SetParent(this);
+            }
+        }
+        // If the player is holding a plate, give ingredient to the player
+        else if (parent.GetKitchenObject() is PlateKitchenObject plateKitchenObject)
+        {
+            if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
+            {
+                GetKitchenObject().DestroySelf();
+                // Reset frying timer on pick up
+                fryingTimer = 0;
+
+                OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs { progressNormalized = 0 });
+                OnFryingStateChanged?.Invoke(this, new OnFryingStateChangedEventArgs { isFrying = false });
             }
         }
         else if (!parent.HasKitchenObject())
@@ -94,6 +96,17 @@ public class StoveCounter : BaseCounter, IHasProgress
         }
 
         return false;
+    }
+
+    FryingRecipeSO GetRecipeSO(KitchenObjectSO input)
+    {
+        foreach (var recipe in fryingRecipeSoArray)
+        {
+            if (recipe.input.objectName == input.objectName)
+                return recipe;
+        }
+
+        return null;
     }
 
     public override void InteractAlternate(IKitchenObjectParent parent)

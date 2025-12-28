@@ -13,9 +13,14 @@ public class PlatesCounterVisual : MonoBehaviour
     [SerializeField]
     PlatesCounter platesCounter;
 
-    const float plateHeight = 0.1f;
+    const float k_PlateHeight = 0.1f;
 
-    Stack<Transform> plates = new();
+    Stack<Transform> plates;
+
+    void Awake()
+    {
+        plates = new();
+    }
 
     void Start()
     {
@@ -26,7 +31,7 @@ public class PlatesCounterVisual : MonoBehaviour
     void SpawnPlate(object sender, EventArgs e)
     {
         var plate = Instantiate(platesPrefab, counterTopPoint, true);
-        plate.transform.localPosition = Vector3.up * plateHeight * plates.Count;
+        plate.transform.localPosition = Vector3.up * k_PlateHeight * plates.Count;
         plates.Push(plate);
     }
 

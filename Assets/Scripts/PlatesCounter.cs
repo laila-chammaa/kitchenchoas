@@ -10,15 +10,15 @@ public class PlatesCounter : BaseCounter
     public event EventHandler OnPlateTaken;
 
     int spawnedPlatesAmount;
-    int spawnedPlatesAmountMax;
-
     float spawnTime; 
-    const int k_SpawnTimeMax = 5;
+
+    const int k_SpawnedPlatesAmountMax = 5;
+    const int k_SpawnTimeMax = 4;
 
     void Update()
     {
         spawnTime += Time.deltaTime;
-        if (spawnTime >= k_SpawnTimeMax)
+        if (spawnTime >= k_SpawnTimeMax && spawnedPlatesAmount <= k_SpawnedPlatesAmountMax)
         {
             spawnedPlatesAmount++;
             OnPlateSpawned?.Invoke(this, EventArgs.Empty);
