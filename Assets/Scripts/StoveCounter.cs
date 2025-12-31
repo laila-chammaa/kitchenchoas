@@ -4,6 +4,7 @@ using UnityEngine;
 public class StoveCounter : BaseCounter, IHasProgress
 {
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
+    public event EventHandler OnFry;
 
     public event EventHandler<OnFryingStateChangedEventArgs> OnFryingStateChanged;
 
@@ -16,6 +17,7 @@ public class StoveCounter : BaseCounter, IHasProgress
     FryingRecipeSO[] fryingRecipeSoArray;
 
     float fryingTimer;
+    bool isFrying = false;
 
     void Update()
     {
@@ -26,13 +28,23 @@ public class StoveCounter : BaseCounter, IHasProgress
         if (recipeSO == null)
         {
             OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs { progressNormalized = 0 });
-            OnFryingStateChanged?.Invoke(this, new OnFryingStateChangedEventArgs { isFrying = false });
+            if (isFrying)
+            {
+                isFrying = false;
+                OnFryingStateChanged?.Invoke(this, new OnFryingStateChangedEventArgs { isFrying = false });
+            }
+
             return;
         }
 
         fryingTimer += Time.deltaTime;
 
-        OnFryingStateChanged?.Invoke(this, new OnFryingStateChangedEventArgs() { isFrying = true });
+        if (!isFrying)
+        {
+            isFrying = true;
+            OnFryingStateChanged?.Invoke(this, new OnFryingStateChangedEventArgs() { isFrying = true });
+        }
+
         OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
             { progressNormalized = fryingTimer / recipeSO.cookingTime });
 
@@ -72,7 +84,11 @@ public class StoveCounter : BaseCounter, IHasProgress
                 fryingTimer = 0;
 
                 OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs { progressNormalized = 0 });
-                OnFryingStateChanged?.Invoke(this, new OnFryingStateChangedEventArgs { isFrying = false });
+                if (isFrying)
+                {
+                    isFrying = false;
+                    OnFryingStateChanged?.Invoke(this, new OnFryingStateChangedEventArgs { isFrying = false });
+                }
             }
         }
         else if (!parent.HasKitchenObject())
@@ -83,7 +99,11 @@ public class StoveCounter : BaseCounter, IHasProgress
             fryingTimer = 0;
 
             OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs { progressNormalized = 0 });
-            OnFryingStateChanged?.Invoke(this, new OnFryingStateChangedEventArgs { isFrying = false });
+            if (isFrying)
+            {
+                isFrying = false;
+                OnFryingStateChanged?.Invoke(this, new OnFryingStateChangedEventArgs { isFrying = false });
+            }
         }
     }
 

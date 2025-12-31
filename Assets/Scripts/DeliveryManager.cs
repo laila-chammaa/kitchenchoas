@@ -18,6 +18,8 @@ public class DeliverManager : MonoBehaviour
     const int k_OrderMax = 4;
 
     public event EventHandler OnOrdersChanged;
+    public event EventHandler OnOrderDeliverySuccess;
+    public event EventHandler OnOrderDeliveryFailure;
 
     void Awake()
     {
@@ -70,10 +72,12 @@ public class DeliverManager : MonoBehaviour
                     orders.Remove(order);
                     spawnOrderTimer = 0;
                     OnOrdersChanged?.Invoke(this, EventArgs.Empty);
+                    OnOrderDeliverySuccess?.Invoke(this, EventArgs.Empty);
                     return;
                 }
             }
         }
+        OnOrderDeliveryFailure?.Invoke(this, EventArgs.Empty);
     }
 
     public List<RecipeSO> GetOrders()

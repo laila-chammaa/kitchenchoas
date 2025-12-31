@@ -9,6 +9,8 @@ public class CuttingCounter : BaseCounter, IHasProgress
     CuttingRecipeSO[] cuttingRecipeSoArray;
 
     public event EventHandler OnPlayerCutObject;
+    public static event EventHandler OnCut;
+
     const int k_CuttingProgressMax = 3;
     int cuttingProgress;
 
@@ -62,6 +64,7 @@ public class CuttingCounter : BaseCounter, IHasProgress
 
         cuttingProgress++;
 
+        OnCut?.Invoke(this, EventArgs.Empty);
         OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs()
         {
             progressNormalized = (float)cuttingProgress/k_CuttingProgressMax
