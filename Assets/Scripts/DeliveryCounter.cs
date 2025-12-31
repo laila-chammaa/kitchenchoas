@@ -6,6 +6,7 @@ public class DeliveryCounter : BaseCounter
     {
         if (parent.HasKitchenObject() && parent.GetKitchenObject() is PlateKitchenObject plateKitchenObject)
         {
+            DeliverManager.Instance.DeliverRecipe(plateKitchenObject);
             plateKitchenObject.DestroySelf();
         }
     }

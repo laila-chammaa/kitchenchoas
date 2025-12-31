@@ -36,5 +36,4 @@ public class PlatesIconUI : MonoBehaviour
             icon.GetComponent<PlateIconTemplate>().SetIconImage(kitchenObjectSo.sprite);
         }
     }
-
 }
