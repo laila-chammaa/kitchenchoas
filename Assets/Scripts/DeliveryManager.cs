@@ -12,6 +12,8 @@ public class DeliverManager : MonoBehaviour
 
     List<RecipeSO> orders;
 
+    int ordersDeliveredCount = 0;
+
     float spawnOrderTimer;
 
     const float k_SpawnOrderTimerMax = 10f;
@@ -70,6 +72,7 @@ public class DeliverManager : MonoBehaviour
                 {
                     // Order was fulfilled!
                     orders.Remove(order);
+                    ordersDeliveredCount++;
                     spawnOrderTimer = 0;
                     OnOrdersChanged?.Invoke(this, EventArgs.Empty);
                     OnOrderDeliverySuccess?.Invoke(this, EventArgs.Empty);
@@ -83,5 +86,10 @@ public class DeliverManager : MonoBehaviour
     public List<RecipeSO> GetOrders()
     {
         return orders;
+    }
+
+    public int GetOrdersDeliveredCount()
+    {
+        return ordersDeliveredCount;
     }
 }
