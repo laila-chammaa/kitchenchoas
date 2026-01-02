@@ -9,6 +9,9 @@ public class GamePausedUI : MonoBehaviour
     Button resumeButton;
 
     [SerializeField]
+    Button optionsButton;
+
+    [SerializeField]
     Button mainMenuButton;
 
     void Start()
@@ -16,6 +19,7 @@ public class GamePausedUI : MonoBehaviour
         Hide();
         GameManager.Instance.OnStateChanged += OnStateChanged;
         resumeButton.onClick.AddListener(() => GameManager.Instance.TogglePauseGame());
+        optionsButton.onClick.AddListener(() => OptionsMenuUI.Instance.Show());
         mainMenuButton.onClick.AddListener(() => SceneManager.LoadScene(0));
     }
 
