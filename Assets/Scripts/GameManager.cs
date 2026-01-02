@@ -10,10 +10,24 @@ public class GameManager : MonoBehaviour
         WaitingToStart,
         CountdownToStart,
         GamePlaying,
+        GamePaused,
         GameOver
     }
 
-    State state;
+    State m_State;
+
+    State state
+    {
+        get => m_State;
+        set
+        {
+            if (m_State == value)
+                return;
+
+            m_State = value;
+            OnStateChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
 
     float waitingToStartTimer = 1f;
     float countdownToStartTimer = 3f;
@@ -27,6 +41,11 @@ public class GameManager : MonoBehaviour
         Instance = this;
     }
 
+    void Start()
+    {
+        GameInput.Instance.OnPauseAction += GameInputOnPauseAction;
+    }
+
     void Update()
     {
         switch (state)
@@ -36,7 +55,6 @@ public class GameManager : MonoBehaviour
                 if (waitingToStartTimer < 0)
                 {
                     state = State.CountdownToStart;
-                    OnStateChanged?.Invoke(this, EventArgs.Empty);
                 }
                 break;
             case State.CountdownToStart:
@@ -44,7 +62,6 @@ public class GameManager : MonoBehaviour
                 if (countdownToStartTimer < 1)
                 {
                     state = State.GamePlaying;
-                    OnStateChanged?.Invoke(this, EventArgs.Empty);
                 }
                 break;
             case State.GamePlaying:
@@ -52,10 +69,9 @@ public class GameManager : MonoBehaviour
                 if (gamePlayingTimer < 0)
                 {
                     state = State.GameOver;
-                    OnStateChanged?.Invoke(this, EventArgs.Empty);
                 }
                 break;
-            case State.GameOver:
+            case State.GameOver or State.GamePaused:
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -77,6 +93,11 @@ public class GameManager : MonoBehaviour
         return state == State.GameOver;
     }
 
+    public bool IsGamePaused()
+    {
+        return state == State.GamePaused;
+    }
+
     public int GetGameStartCountdown()
     {
         return (int) countdownToStartTimer;
@@ -85,5 +106,24 @@ public class GameManager : MonoBehaviour
     public float GetGamePlayingTimerNormalized()
     {
         return 1 - gamePlayingTimer/k_GamePlayingTimerMax;
+    }
+
+    void GameInputOnPauseAction(object sender, EventArgs e)
+    {
+        TogglePauseGame();
+    }
+
+    public void TogglePauseGame()
+    {
+        if (state == State.GamePlaying)
+        {
+            state = State.GamePaused;
+            Time.timeScale = 0;
+        }
+        else if (state == State.GamePaused)
+        {
+            state = State.GamePlaying;
+            Time.timeScale = 1;
+        }
     }
 }

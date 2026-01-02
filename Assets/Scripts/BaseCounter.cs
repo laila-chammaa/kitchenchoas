@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public abstract class BaseCounter : MonoBehaviour, IKitchenObjectParent
 {
@@ -9,6 +10,11 @@ public abstract class BaseCounter : MonoBehaviour, IKitchenObjectParent
     private Transform counterTopPoint;
 
     private KitchenObject kitchenObject;
+
+    void Awake()
+    {
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
+    }
 
     public abstract void Interact(IKitchenObjectParent parent);
     public abstract void InteractAlternate(IKitchenObjectParent parent);
@@ -40,5 +46,11 @@ public abstract class BaseCounter : MonoBehaviour, IKitchenObjectParent
     public bool HasKitchenObject()
     {
         return kitchenObject != null;
+    }
+
+    private static void OnSceneUnloaded(Scene scene)
+    {
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
+        OnObjectDrop = null;
     }
 }

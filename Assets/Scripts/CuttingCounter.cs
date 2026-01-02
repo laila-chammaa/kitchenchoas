@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CuttingCounter : BaseCounter, IHasProgress
 {
@@ -13,6 +14,11 @@ public class CuttingCounter : BaseCounter, IHasProgress
 
     const int k_CuttingProgressMax = 3;
     int cuttingProgress;
+
+    void Awake()
+    {
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
+    }
 
     public override void Interact(IKitchenObjectParent parent)
     {
@@ -104,5 +110,11 @@ public class CuttingCounter : BaseCounter, IHasProgress
         }
 
         return false;
+    }
+
+    void OnSceneUnloaded(Scene scene)
+    {
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
+        OnCut = null;
     }
 }
