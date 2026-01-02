@@ -29,7 +29,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    float waitingToStartTimer = 1f;
     float countdownToStartTimer = 3f;
     float gamePlayingTimer = 120f;
     const float k_GamePlayingTimerMax = 120f;
@@ -44,22 +43,16 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         GameInput.Instance.OnPauseAction += GameInputOnPauseAction;
+        GameInput.Instance.OnInteractAction += GameInputOnInteractAction;
     }
 
     void Update()
     {
         switch (state)
         {
-            case State.WaitingToStart:
-                waitingToStartTimer -= Time.deltaTime;
-                if (waitingToStartTimer < 0)
-                {
-                    state = State.CountdownToStart;
-                }
-                break;
             case State.CountdownToStart:
                 countdownToStartTimer -= Time.deltaTime;
-                if (countdownToStartTimer < 1)
+                if (countdownToStartTimer < 0)
                 {
                     state = State.GamePlaying;
                 }
@@ -71,7 +64,7 @@ public class GameManager : MonoBehaviour
                     state = State.GameOver;
                 }
                 break;
-            case State.GameOver or State.GamePaused:
+            case State.GameOver or State.GamePaused or State.WaitingToStart:
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -100,7 +93,7 @@ public class GameManager : MonoBehaviour
 
     public int GetGameStartCountdown()
     {
-        return (int) countdownToStartTimer;
+        return (int)Math.Ceiling(countdownToStartTimer);
     }
 
     public float GetGamePlayingTimerNormalized()
@@ -111,6 +104,15 @@ public class GameManager : MonoBehaviour
     void GameInputOnPauseAction(object sender, EventArgs e)
     {
         TogglePauseGame();
+    }
+
+    void GameInputOnInteractAction(object sender, EventArgs e)
+    {
+        if (state == State.WaitingToStart)
+        {
+            // Tutorial is showing, and we just received the interact action, hide tutorial and start game
+            state = State.CountdownToStart;
+        }
     }
 
     public void TogglePauseGame()

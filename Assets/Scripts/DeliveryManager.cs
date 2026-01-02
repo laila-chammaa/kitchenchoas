@@ -32,7 +32,7 @@ public class DeliverManager : MonoBehaviour
     void Update()
     {
         spawnOrderTimer += Time.deltaTime;
-        if (spawnOrderTimer >= k_SpawnOrderTimerMax && orders.Count < k_OrderMax)
+        if (GameManager.Instance.IsGamePlaying() && spawnOrderTimer >= k_SpawnOrderTimerMax && orders.Count < k_OrderMax)
         {
             spawnOrderTimer = 0;
 
