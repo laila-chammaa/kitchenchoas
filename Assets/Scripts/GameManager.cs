@@ -30,8 +30,8 @@ public class GameManager : MonoBehaviour
     }
 
     float countdownToStartTimer = 3f;
-    float gamePlayingTimer = 120f;
-    const float k_GamePlayingTimerMax = 120f;
+    float gamePlayingTimer = 30f;
+    const float k_GamePlayingTimerMax = 30f;
 
     public EventHandler OnStateChanged;
 
