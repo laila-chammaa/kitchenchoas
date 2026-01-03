@@ -8,6 +8,11 @@ public class StoveCounterSound : MonoBehaviour
 
     AudioSource audioSource;
 
+    float warningSoundTimer = 0;
+    const float k_WarningSoundTimerMax = 0.2f;
+
+    bool shouldPlayWarningSound;
+
     void Awake()
     {
         audioSource = GetComponent<AudioSource>();
@@ -15,10 +20,27 @@ public class StoveCounterSound : MonoBehaviour
 
     void Start()
     {
-        stoveCounter.OnFryingStateChanged += StoveCounterOnOnFryingStateChanged;
+        stoveCounter.OnFryingStateChanged += StoveCounterOnFryingStateChanged;
+        stoveCounter.OnProgressChanged += StoveCounterOnProgressChanged;
     }
 
-    void StoveCounterOnOnFryingStateChanged(object sender, StoveCounter.OnFryingStateChangedEventArgs e)
+    void Update()
+    {
+        warningSoundTimer += Time.deltaTime;
+        if (shouldPlayWarningSound && warningSoundTimer >= k_WarningSoundTimerMax)
+        {
+            SoundManager.Instance.PlayWarningSound(stoveCounter.transform.position);
+            warningSoundTimer = 0;
+        }
+    }
+
+    void StoveCounterOnProgressChanged(object sender, IHasProgress.OnProgressChangedEventArgs e)
+    {
+        var burnShowProgressAmount = 0.5f;
+        shouldPlayWarningSound = e.progressNormalized >= burnShowProgressAmount && stoveCounter.IsCooked();
+    }
+
+    void StoveCounterOnFryingStateChanged(object sender, StoveCounter.OnFryingStateChangedEventArgs e)
     {
         if (e.isFrying)
             audioSource.Play();

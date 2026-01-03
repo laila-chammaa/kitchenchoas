@@ -4,7 +4,6 @@ using UnityEngine;
 public class StoveCounter : BaseCounter, IHasProgress
 {
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
-    public event EventHandler OnFry;
 
     public event EventHandler<OnFryingStateChangedEventArgs> OnFryingStateChanged;
 
@@ -17,7 +16,7 @@ public class StoveCounter : BaseCounter, IHasProgress
     FryingRecipeSO[] fryingRecipeSoArray;
 
     float fryingTimer;
-    bool isFrying = false;
+    bool isFrying;
 
     void Update()
     {
@@ -27,7 +26,6 @@ public class StoveCounter : BaseCounter, IHasProgress
         var recipeSO = GetRecipeSO(GetKitchenObject().GetKitchenObjectSO());
         if (recipeSO == null)
         {
-            OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs { progressNormalized = 0 });
             if (isFrying)
             {
                 isFrying = false;
@@ -54,6 +52,7 @@ public class StoveCounter : BaseCounter, IHasProgress
 
             // Spawn the next state item
             KitchenObject.SpawnKitchenObject(recipeSO.output.prefab, this);
+            OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs { progressNormalized = 0 });
             fryingTimer = 0;
         }
     }
@@ -65,7 +64,7 @@ public class StoveCounter : BaseCounter, IHasProgress
             // If parent has object, drop it here
             if (parent.HasKitchenObject())
             {
-                // Check if can be cooked
+                // Check if it can be cooked
                 var hasRecipe = HasRecipe(parent.GetKitchenObject().GetKitchenObjectSO());
                 if (!hasRecipe)
                     return;
@@ -132,5 +131,11 @@ public class StoveCounter : BaseCounter, IHasProgress
     public override void InteractAlternate(IKitchenObjectParent parent)
     {
         // Empty on purpose
+    }
+
+    public bool IsCooked()
+    {
+        // TODO: really awful way to do this.
+        return GetRecipeSO(GetKitchenObject().GetKitchenObjectSO()).output.objectName.Contains("burn", StringComparison.CurrentCultureIgnoreCase);
     }
 }

@@ -8,11 +8,11 @@ public class ContainerCounterVisual : MonoBehaviour
     [SerializeField]
     ContainerCounter containerCounter;
 
-    Animator m_Animator;
+    Animator animator;
 
     void Awake()
     {
-        m_Animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
     }
 
     void Start()
@@ -22,6 +22,6 @@ public class ContainerCounterVisual : MonoBehaviour
 
     void ContainerCounterOnOnPlayerGrabbedObject(object sender, EventArgs e)
     {
-        m_Animator.SetTrigger(OPEN_CLOSE);
+        animator.SetTrigger(OPEN_CLOSE);
     }
 }

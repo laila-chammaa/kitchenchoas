@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FryingRecipeSO
   input: {fileID: 11400000, guid: 17f257c3a91224118a269639b5d73040, type: 2}
   output: {fileID: 11400000, guid: 5a1af0b71f20d4a159005736feee2217, type: 2}
-  cookingTime: 2
+  cookingTime: 5

@@ -91,9 +91,9 @@ public class GameManager : MonoBehaviour
         return state == State.GamePaused;
     }
 
-    public int GetGameStartCountdown()
+    public float GetGameStartCountdown()
     {
-        return (int)Math.Ceiling(countdownToStartTimer);
+        return countdownToStartTimer;
     }
 
     public float GetGamePlayingTimerNormalized()
