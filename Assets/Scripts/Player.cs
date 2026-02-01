@@ -1,10 +1,9 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Player : MonoBehaviour, IKitchenObjectParent
+public class Player : NetworkBehaviour, IKitchenObjectParent
 {
-    public static Player Instance { get; private set; }
-
     public event EventHandler OnObjectPickup;
 
     public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
@@ -16,9 +15,6 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     
     [SerializeField]
     private float moveSpeed = 7f;
-
-    [SerializeField]
-    GameInput gameInput;
 
     [SerializeField]
     LayerMask countersLayerMask;
@@ -33,18 +29,13 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     void Awake()
     {
-        if (Instance != null)
-        {
-            Debug.LogError("There is more than one Player instance");
-        }
-
-        Instance = this;
+        // Instance = this;
     }
 
     void Start()
     {
-        gameInput.OnInteractAction += GameInputOnOnInteractAction;
-        gameInput.OnInteractAlternateAction += GameInputOnOnInteractAlternateAction;
+        GameInput.Instance.OnInteractAction += GameInputOnOnInteractAction;
+        GameInput.Instance.OnInteractAlternateAction += GameInputOnOnInteractAlternateAction;
     }
 
     void GameInputOnOnInteractAction(object sender, EventArgs e)
@@ -65,13 +56,17 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void Update()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
         HandleMovement();
         HandleInteraction();
     }
 
     void HandleInteraction()
     {
-        var inputVector = gameInput.GetMovementVectorNormalized();
+        var inputVector = GameInput.Instance.GetMovementVectorNormalized();
         var moveDir = new Vector3(inputVector.x, 0, inputVector.y);
 
         if (moveDir != Vector3.zero)
@@ -99,7 +94,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     void HandleMovement()
     {
-        var inputVector = gameInput.GetMovementVectorNormalized();
+        var inputVector = GameInput.Instance.GetMovementVectorNormalized();
         var moveDir = new Vector3(inputVector.x, 0, inputVector.y);
 
         var playerRadius = 0.7f;

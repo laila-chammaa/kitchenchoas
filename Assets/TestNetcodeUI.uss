@@ -1,0 +1,13 @@
+:root {
+}
+
+.unity-button {
+    margin-top: 11px;
+    background-color: rgb(255, 255, 255);
+    border-top-left-radius: 9px;
+    border-top-right-radius: 9px;
+    border-bottom-right-radius: 9px;
+    border-bottom-left-radius: 9px;
+    width: 50%;
+    -unity-font-style: bold;
+}
