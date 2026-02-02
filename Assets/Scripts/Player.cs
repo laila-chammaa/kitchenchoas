@@ -1,11 +1,15 @@
 using System;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : NetworkBehaviour, IKitchenObjectParent
 {
-    public event EventHandler OnObjectPickup;
+    public static Player LocalInstance;
 
+    public static event EventHandler OnAnyPlayerSpawned;
+    public event EventHandler OnObjectPickup;
+    public static event EventHandler OnAnyObjectPickup;
     public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
 
     public class OnSelectedCounterChangedEventArgs : EventArgs
@@ -27,9 +31,18 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     BaseCounter selectedCounter;
     KitchenObject kitchenObject;
 
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            LocalInstance = this;
+            OnAnyPlayerSpawned?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
     void Awake()
     {
-        // Instance = this;
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
     }
 
     void Start()
@@ -162,6 +175,7 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
         if (kitchenObject != null)
         {
             OnObjectPickup?.Invoke(this, EventArgs.Empty);
+            OnAnyObjectPickup?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -178,5 +192,12 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     public bool HasKitchenObject()
     {
         return kitchenObject != null;
+    }
+
+    private static void OnSceneUnloaded(Scene scene)
+    {
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
+        OnAnyPlayerSpawned = null;
+        OnAnyObjectPickup = null;
     }
 }

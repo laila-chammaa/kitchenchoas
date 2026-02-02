@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class DeliverManager : MonoBehaviour
+public class DeliverManager : NetworkBehaviour
 {
     public static DeliverManager Instance { get; private set; }
 
@@ -31,26 +32,37 @@ public class DeliverManager : MonoBehaviour
 
     void Update()
     {
+        if (!IsServer)
+        {
+            return;
+        }
         spawnOrderTimer += Time.deltaTime;
         if (GameManager.Instance.IsGamePlaying() && spawnOrderTimer >= k_SpawnOrderTimerMax && orders.Count < k_OrderMax)
         {
             spawnOrderTimer = 0;
 
-            var order = recipeList.recipeList[Random.Range(0, recipeList.recipeList.Count)];
-            orders.Add(order);
-            OnOrdersChanged?.Invoke(this, EventArgs.Empty);
+            var recipeIndex = Random.Range(0, recipeList.recipeList.Count);
+            SpawnRecipeClientRpc(recipeIndex);
         }
+    }
+
+    [ClientRpc]
+    void SpawnRecipeClientRpc(int recipeIndex)
+    {
+        var order = recipeList.recipeList[recipeIndex];
+        orders.Add(order);
+        OnOrdersChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public void DeliverRecipe(PlateKitchenObject plateKitchenObject)
     {
-        foreach (var order in orders)
+        for (var i = 0; i < orders.Count; i++)
         {
-            if (order.ingredients.Count == plateKitchenObject.GetKitchenObjectSOList().Count)
+            if (orders[i].ingredients.Count == plateKitchenObject.GetKitchenObjectSOList().Count)
             {
                 // Number of ingredients matches
                 var plateContentMatchesRecipe = true;
-                foreach (var ingredient in order.ingredients)
+                foreach (var ingredient in orders[i].ingredients)
                 {
                     var ingredientFound = false;
                     foreach (var kitchenObject in plateKitchenObject.GetKitchenObjectSOList())
@@ -71,15 +83,40 @@ public class DeliverManager : MonoBehaviour
                 if (plateContentMatchesRecipe)
                 {
                     // Order was fulfilled!
-                    orders.Remove(order);
-                    ordersDeliveredCount++;
-                    spawnOrderTimer = 0;
-                    OnOrdersChanged?.Invoke(this, EventArgs.Empty);
-                    OnOrderDeliverySuccess?.Invoke(this, EventArgs.Empty);
+                    DeliverOrderSuccessServerRpc(i);
                     return;
                 }
             }
         }
+
+        DeliverOrderFailedServerRpc();
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    void DeliverOrderSuccessServerRpc(int orderIndex)
+    {
+        DeliverOrderSuccessClientRpc(orderIndex);
+    }
+
+    [ClientRpc]
+    void DeliverOrderSuccessClientRpc(int orderIndex)
+    {
+        orders.RemoveAt(orderIndex);
+        ordersDeliveredCount++;
+        spawnOrderTimer = 0;
+        OnOrdersChanged?.Invoke(this, EventArgs.Empty);
+        OnOrderDeliverySuccess?.Invoke(this, EventArgs.Empty);
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    void DeliverOrderFailedServerRpc()
+    {
+        DeliverOrderFailedClientRpc();
+    }
+
+    [ClientRpc]
+    void DeliverOrderFailedClientRpc()
+    {
         OnOrderDeliveryFailure?.Invoke(this, EventArgs.Empty);
     }
 

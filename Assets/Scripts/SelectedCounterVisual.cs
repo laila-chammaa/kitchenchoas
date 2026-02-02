@@ -1,7 +1,8 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
-public class SelectedCounterVisual : MonoBehaviour
+public class SelectedCounterVisual : NetworkBehaviour
 {
     [SerializeField]
     BaseCounter counter;
@@ -11,7 +12,23 @@ public class SelectedCounterVisual : MonoBehaviour
 
     void Start()
     {
-        // Player.Instance.OnSelectedCounterChanged += OnSelectedCounterChanged;
+        if (Player.LocalInstance != null)
+        { 
+            Player.LocalInstance.OnSelectedCounterChanged += OnSelectedCounterChanged;
+        }
+        else
+        {
+            Player.OnAnyPlayerSpawned += OnAnyPlayerSpawned;
+        }
+    }
+
+    void OnAnyPlayerSpawned(object sender, EventArgs e)
+    {
+        if (Player.LocalInstance != null)
+        {
+            Player.LocalInstance.OnSelectedCounterChanged -= OnSelectedCounterChanged;
+            Player.LocalInstance.OnSelectedCounterChanged += OnSelectedCounterChanged;
+        }
     }
 
     void OnSelectedCounterChanged(object sender, Player.OnSelectedCounterChangedEventArgs e)
