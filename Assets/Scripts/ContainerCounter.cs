@@ -13,7 +13,7 @@ public class ContainerCounter : BaseCounter
         if (parent.HasKitchenObject())
             return;
 
-        KitchenObject.SpawnKitchenObject(kitchenObjectSO.prefab, parent);
+        KitchenObject.SpawnKitchenObject(kitchenObjectSO, parent);
         OnPlayerGrabbedObject?.Invoke(this, EventArgs.Empty);
     }
 

@@ -169,6 +169,11 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
         return playerHandsPoint;
     }
 
+    public NetworkObject GetNetworkObject()
+    {
+        return NetworkObject;
+    }
+
     public void SetKitchenObject(KitchenObject kitchenObject)
     {
         this.kitchenObject = kitchenObject;

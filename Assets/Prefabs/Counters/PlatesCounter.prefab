@@ -89,7 +89,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   counterTopPoint: {fileID: 7049501155481652702}
-  platesPrefab: {fileID: 887063232558153788, guid: 53e46abb7592b45c3985516f9a76ea17, type: 3}
+  platesSO: {fileID: 11400000, guid: 8e0b4508c7bfc4c30b9a28c4a862c533, type: 2}
 --- !u!4 &7049501155481652702 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9134794405204106078, guid: 5ccfc88f7b6dc49d4b03400156a3b39f, type: 3}
@@ -279,6 +279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd2235fa0f02b4e6398234c18b2b7ebe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SelectedCounterVisual
+  ShowTopMostFoldoutHeaderGroup: 1
   counter: {fileID: 7840252128866330835}
   visualGameObjects:
   - {fileID: 9182588534163427119}

@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlatesCounter : BaseCounter
 {
     [SerializeField]
-    Transform platesPrefab;
+    KitchenObjectSO platesSO;
 
     public event EventHandler OnPlateSpawned;
     public event EventHandler OnPlateTaken;
@@ -31,7 +31,7 @@ public class PlatesCounter : BaseCounter
         if (spawnedPlatesAmount > 0 && !parent.HasKitchenObject())
         {
             // Actually create the SO and set its parent to the player
-            KitchenObject.SpawnKitchenObject(platesPrefab, parent);
+            KitchenObject.SpawnKitchenObject(platesSO, parent);
             spawnedPlatesAmount--;
             OnPlateTaken?.Invoke(this, EventArgs.Empty);
             spawnTime = 0;

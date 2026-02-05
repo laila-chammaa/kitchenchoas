@@ -85,7 +85,7 @@ public class CuttingCounter : BaseCounter, IHasProgress
 
             var recipe = GetRecipeSO(uncutKitchenObject.GetKitchenObjectSO());
             uncutKitchenObject.DestroySelf();
-            KitchenObject.SpawnKitchenObject(recipe.output.prefab, this);
+            KitchenObject.SpawnKitchenObject(recipe.output, this);
             OnPlayerCutObject?.Invoke(this, EventArgs.Empty);
         }
     }

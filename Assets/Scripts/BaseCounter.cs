@@ -1,4 +1,5 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -22,6 +23,11 @@ public abstract class BaseCounter : MonoBehaviour, IKitchenObjectParent
     public Transform GetKitchenObjectFollowTransform()
     {
         return counterTopPoint;
+    }
+
+    public NetworkObject GetNetworkObject()
+    {
+        return null;
     }
 
     public void SetKitchenObject(KitchenObject kitchenObject)

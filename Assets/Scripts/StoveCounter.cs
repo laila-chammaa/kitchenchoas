@@ -51,7 +51,7 @@ public class StoveCounter : BaseCounter, IHasProgress
             GetKitchenObject().DestroySelf();
 
             // Spawn the next state item
-            KitchenObject.SpawnKitchenObject(recipeSO.output.prefab, this);
+            KitchenObject.SpawnKitchenObject(recipeSO.output, this);
             OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs { progressNormalized = 0 });
             fryingTimer = 0;
         }
