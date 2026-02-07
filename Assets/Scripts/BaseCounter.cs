@@ -3,7 +3,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public abstract class BaseCounter : MonoBehaviour, IKitchenObjectParent
+public abstract class BaseCounter : NetworkBehaviour, IKitchenObjectParent
 {
     public static EventHandler OnObjectDrop;
 
@@ -27,7 +27,7 @@ public abstract class BaseCounter : MonoBehaviour, IKitchenObjectParent
 
     public NetworkObject GetNetworkObject()
     {
-        return null;
+        return NetworkObject;
     }
 
     public void SetKitchenObject(KitchenObject kitchenObject)

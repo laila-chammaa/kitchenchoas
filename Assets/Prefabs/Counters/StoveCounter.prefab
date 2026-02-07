@@ -465,6 +465,9 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5887777068920456015, guid: 5ccfc88f7b6dc49d4b03400156a3b39f, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 5610002050196870911}
+    - targetCorrespondingSourceObject: {fileID: 5887777068920456015, guid: 5ccfc88f7b6dc49d4b03400156a3b39f, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 8177336851058342114}
   m_SourcePrefab: {fileID: 100100000, guid: 5ccfc88f7b6dc49d4b03400156a3b39f, type: 3}
 --- !u!4 &2339739881572462277 stripped
@@ -477,6 +480,31 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5887777068920456015, guid: 5ccfc88f7b6dc49d4b03400156a3b39f, type: 3}
   m_PrefabInstance: {fileID: 1519454739957396482}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5610002050196870911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4945979359388268365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 4254675748
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &8177336851058342114
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -489,6 +517,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62b6a4c15d4764feebf0293babf2dc23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  ShowTopMostFoldoutHeaderGroup: 1
   counterTopPoint: {fileID: 7769693506441523036}
   fryingRecipeSoArray:
   - {fileID: 11400000, guid: 226a0c490dc2b4ad0baf5831c8c64a3f, type: 2}
@@ -782,6 +811,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd2235fa0f02b4e6398234c18b2b7ebe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SelectedCounterVisual
+  ShowTopMostFoldoutHeaderGroup: 1
   counter: {fileID: 8177336851058342114}
   visualGameObjects:
   - {fileID: 1958430436161832368}

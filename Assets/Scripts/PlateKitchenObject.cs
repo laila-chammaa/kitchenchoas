@@ -22,8 +22,9 @@ public class PlateKitchenObject : KitchenObject
         public KitchenObjectSO kitchenObjectSo;
     }
 
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         kitchenObjectSOArray = new();
     }
 

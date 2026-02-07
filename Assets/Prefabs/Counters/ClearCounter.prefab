@@ -105,6 +105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd2235fa0f02b4e6398234c18b2b7ebe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SelectedCounterVisual
+  ShowTopMostFoldoutHeaderGroup: 1
   counter: {fileID: 8981155545229419051}
   visualGameObjects:
   - {fileID: 7318632316608298559}
@@ -182,6 +183,9 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5887777068920456015, guid: 5ccfc88f7b6dc49d4b03400156a3b39f, type: 3}
       insertIndex: -1
+      addedObject: {fileID: -4925712817057055336}
+    - targetCorrespondingSourceObject: {fileID: 5887777068920456015, guid: 5ccfc88f7b6dc49d4b03400156a3b39f, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 8981155545229419051}
   m_SourcePrefab: {fileID: 100100000, guid: 5ccfc88f7b6dc49d4b03400156a3b39f, type: 3}
 --- !u!4 &286365218938594568 stripped
@@ -199,6 +203,31 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5887777068920456015, guid: 5ccfc88f7b6dc49d4b03400156a3b39f, type: 3}
   m_PrefabInstance: {fileID: 3933615727597977551}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &-4925712817057055336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7431665771973721216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 218533924
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &8981155545229419051
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,6 +240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21ca31602b20c4c05b73d7bc4721dc6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClearCounter
+  ShowTopMostFoldoutHeaderGroup: 1
   counterTopPoint: {fileID: 5211313157468284049}
 --- !u!1001 &5820566519567762946
 PrefabInstance:
