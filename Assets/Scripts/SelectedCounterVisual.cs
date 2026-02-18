@@ -2,7 +2,7 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
-public class SelectedCounterVisual : NetworkBehaviour
+public class SelectedCounterVisual : MonoBehaviour
 {
     [SerializeField]
     BaseCounter counter;
@@ -33,6 +33,12 @@ public class SelectedCounterVisual : NetworkBehaviour
 
     void OnSelectedCounterChanged(object sender, Player.OnSelectedCounterChangedEventArgs e)
     {
+        if (counter == null)
+        {
+            Debug.LogWarning("Selected counter visual has a null counter reference. Very strange indeed.");
+            return;
+        }
+
         if (e.selectedCounter == counter)
         {
             Show();

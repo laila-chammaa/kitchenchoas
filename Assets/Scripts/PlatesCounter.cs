@@ -1,4 +1,5 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
 public class PlatesCounter : BaseCounter
@@ -17,13 +18,28 @@ public class PlatesCounter : BaseCounter
 
     void Update()
     {
+        if (!IsServer)
+            return;
+
         spawnTime += Time.deltaTime;
         if (GameManager.Instance.IsGamePlaying() && spawnTime >= k_SpawnTimeMax && spawnedPlatesAmount <= k_SpawnedPlatesAmountMax)
         {
-            spawnedPlatesAmount++;
-            OnPlateSpawned?.Invoke(this, EventArgs.Empty);
-            spawnTime = 0;
+            SpawnPlateServerRpc();
         }
+    }
+
+    [ServerRpc]
+    void SpawnPlateServerRpc()
+    {
+        SpawnPlateClientRpc();
+    }
+
+    [ClientRpc]
+    void SpawnPlateClientRpc() 
+    {
+        spawnedPlatesAmount++;
+        OnPlateSpawned?.Invoke(this, EventArgs.Empty);
+        spawnTime = 0;
     }
 
     public override void Interact(IKitchenObjectParent parent)
@@ -32,11 +48,22 @@ public class PlatesCounter : BaseCounter
         {
             // Actually create the SO and set its parent to the player
             KitchenObject.SpawnKitchenObject(platesSO, parent);
-            spawnedPlatesAmount--;
-            OnPlateTaken?.Invoke(this, EventArgs.Empty);
-            spawnTime = 0;
+            InteractServerRpc();
         }
-    }                                  
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    void InteractServerRpc()
+    {
+        InteractClientRpc();
+    }
+
+    [ClientRpc]
+    void InteractClientRpc()
+    {
+        spawnedPlatesAmount--;
+        OnPlateTaken?.Invoke(this, EventArgs.Empty);
+    }
 
     public override void InteractAlternate(IKitchenObjectParent parent)
     {

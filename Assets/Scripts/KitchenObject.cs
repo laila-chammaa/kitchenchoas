@@ -23,20 +23,6 @@ public class KitchenObject : NetworkBehaviour
 
     public void SetParent(IKitchenObjectParent parent)
     {
-        if (this.parent != null)
-        {
-            // changing parents
-            this.parent.ClearKitchenObject();
-        }
-
-        this.parent = parent;
-        if (parent.HasKitchenObject())
-        {
-            Debug.Log("Parent already has a KitchenObject!");
-            return;
-        }
-        this.parent.SetKitchenObject(this);
-
         SetParentServerRpc(parent.GetNetworkObject());
     }
 
@@ -76,12 +62,31 @@ public class KitchenObject : NetworkBehaviour
 
     public void DestroySelf()
     {
-        parent.ClearKitchenObject();
-        Destroy(gameObject);
+        ClearParentServerRpc(parent.GetNetworkObject());
+        DestroyKitchenObject(this);
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    void ClearParentServerRpc(NetworkObjectReference networkObjectReference)
+    {
+        ClearParentClientRpc(networkObjectReference);
+    }
+
+    [ClientRpc]
+    void ClearParentClientRpc(NetworkObjectReference networkObjectReference)
+    {
+        networkObjectReference.TryGet(out var networkObject);
+        var kitchenObjectParent = networkObject.GetComponent<IKitchenObjectParent>();
+        kitchenObjectParent.ClearKitchenObject();
     }
 
     public static void SpawnKitchenObject(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent parent)
     {
         KitchenObjectManager.Instance.SpawnKitchenObject(kitchenObjectSO, parent);
+    }
+
+    public static void DestroyKitchenObject(KitchenObject kitchenObject)
+    {
+        KitchenObjectManager.Instance.DestroyKitchenObject(kitchenObject);
     }
 }

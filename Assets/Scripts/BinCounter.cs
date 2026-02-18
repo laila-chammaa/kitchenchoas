@@ -1,4 +1,5 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,8 +14,20 @@ public class BinCounter : BaseCounter
     
     public override void Interact(IKitchenObjectParent parent)
     {
-        OnTrash?.Invoke(this, EventArgs.Empty);
         parent.GetKitchenObject().DestroySelf();
+        InteractServerRpc();
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    void InteractServerRpc()
+    {
+        InteractClientRpc();
+    }
+
+    [ClientRpc]
+    void InteractClientRpc()
+    {
+        OnTrash?.Invoke(this, EventArgs.Empty);
     }
 
     public override void InteractAlternate(IKitchenObjectParent parent)

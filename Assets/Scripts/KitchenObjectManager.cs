@@ -31,4 +31,16 @@ public class KitchenObjectManager : NetworkBehaviour
         kitchenObjectTransform.GetComponent<KitchenObject>().SetParent(kitchenObjectParent);
     }
 
+    public void DestroyKitchenObject(KitchenObject kitchenObject)
+    {
+        DestroyKitchenObjectServerRpc(kitchenObject.NetworkObject);
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    void DestroyKitchenObjectServerRpc(NetworkObjectReference kitchenObjectNetworkObject)
+    {
+        kitchenObjectNetworkObject.TryGet(out var networkObject);
+        networkObject.TryGetComponent<KitchenObject>(out var kitchenObject);
+        Destroy(kitchenObject.gameObject);
+    }
 }
