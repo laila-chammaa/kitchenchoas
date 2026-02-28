@@ -43,4 +43,14 @@ public class KitchenObjectManager : NetworkBehaviour
         networkObject.TryGetComponent<KitchenObject>(out var kitchenObject);
         Destroy(kitchenObject.gameObject);
     }
+
+    public int GetKitchenObjectSOIndex(KitchenObjectSO kitchenObjectSo)
+    {
+        return m_KitchenObjectListSO.kitchenObjectSOList.IndexOf(kitchenObjectSo);
+    }
+
+    public KitchenObjectSO GetKitchenObjectSOFromIndex(int index)
+    {
+        return m_KitchenObjectListSO.kitchenObjectSOList[index];
+    }
 }

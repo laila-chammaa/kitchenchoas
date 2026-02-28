@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class PlateKitchenObject : KitchenObject
@@ -42,11 +43,25 @@ public class PlateKitchenObject : KitchenObject
             return false;
         }
 
+        AddIngredientServerRpc(KitchenObjectManager.Instance.GetKitchenObjectSOIndex(kitchenObjectSo));
+
+        return true;
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    void AddIngredientServerRpc(int kitchenObjectIndex)
+    {
+        AddIngredientClientRpc(kitchenObjectIndex);
+    }
+
+    [ClientRpc]
+    void AddIngredientClientRpc(int kitchenObjectIndex)
+    {
+        var kitchenObjectSo = KitchenObjectManager.Instance.GetKitchenObjectSOFromIndex(kitchenObjectIndex);
+
         kitchenObjectSOArray.Add(kitchenObjectSo);
 
         OnIngredientAdded?.Invoke(this, new OnIngredientAddedEventArgs() { kitchenObjectSo = kitchenObjectSo });
-        
-        return true;
     }
 
     public List<KitchenObjectSO> GetKitchenObjectSOList()
