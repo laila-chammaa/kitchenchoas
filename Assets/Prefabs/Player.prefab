@@ -82,7 +82,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2241805414
+  GlobalObjectIdHash: 1680106363
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -116,8 +116,8 @@ MonoBehaviour:
   spawnPointsList:
   - {x: 1.5, y: 0, z: 0}
   - {x: 3, y: 0, z: 0}
-  - {x: -1.5, y: 0, z: -2}
-  - {x: -3, y: 0, z: -2}
+  - {x: 1.5, y: 0, z: -2}
+  - {x: 3, y: 0, z: -2}
 --- !u!114 &6951554136998395004
 MonoBehaviour:
   m_ObjectHideFlags: 0

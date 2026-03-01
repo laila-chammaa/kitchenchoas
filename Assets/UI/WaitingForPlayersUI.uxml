@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1; justify-content: center; align-items: center; background-color: rgba(188, 185, 185, 0.45);">
+        <ui:Label text="WAITING FOR PLAYERS..." style="-unity-font-style: bold;"/>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance { get; private set; }
 
@@ -14,30 +16,30 @@ public class GameManager : MonoBehaviour
         GameOver
     }
 
-    State m_State;
+    NetworkVariable<State> state = new NetworkVariable<State>(State.WaitingToStart);
+    NetworkVariable<float> gamePlayingTimer = new NetworkVariable<float>(100f);
+    NetworkVariable<float> countdownToStartTimer = new NetworkVariable<float>(3f);
+    public bool localPlayerReady { get; private set; }
+    const float k_GamePlayingTimerMax = 100f;
 
-    State state
-    {
-        get => m_State;
-        set
-        {
-            if (m_State == value)
-                return;
-
-            m_State = value;
-            OnStateChanged?.Invoke(this, EventArgs.Empty);
-        }
-    }
-
-    float countdownToStartTimer = 3f;
-    float gamePlayingTimer = 30f;
-    const float k_GamePlayingTimerMax = 30f;
+    Dictionary<ulong, bool> playersReadyDict;
 
     public EventHandler OnStateChanged;
+    public EventHandler OnLocalPlayerReady;
 
     void Awake()
     {
         Instance = this;
+        playersReadyDict = new Dictionary<ulong, bool>();
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        state.OnValueChanged += (value, newValue) =>
+        {
+            OnStateChanged?.Invoke(this, EventArgs.Empty);
+        };
     }
 
     void Start()
@@ -48,20 +50,23 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        switch (state)
+        if (!IsServer)
+            return;
+        
+        switch (state.Value)
         {
             case State.CountdownToStart:
-                countdownToStartTimer -= Time.deltaTime;
-                if (countdownToStartTimer < 0)
+                countdownToStartTimer.Value -= Time.deltaTime;
+                if (countdownToStartTimer.Value < 0)
                 {
-                    state = State.GamePlaying;
+                    state.Value = State.GamePlaying;
                 }
                 break;
             case State.GamePlaying:
-                gamePlayingTimer -= Time.deltaTime;
-                if (gamePlayingTimer < 0)
+                gamePlayingTimer.Value -= Time.deltaTime;
+                if (gamePlayingTimer.Value < 0)
                 {
-                    state = State.GameOver;
+                    state.Value = State.GameOver;
                 }
                 break;
             case State.GameOver or State.GamePaused or State.WaitingToStart:
@@ -73,32 +78,32 @@ public class GameManager : MonoBehaviour
 
     public bool IsGamePlaying()
     {
-        return state == State.GamePlaying;
+        return state.Value == State.GamePlaying;
     }
 
     public bool IsGameStartCountDownActive()
     {
-        return state == State.CountdownToStart;
+        return state.Value == State.CountdownToStart;
     }
 
     public bool IsGameOver()
     {
-        return state == State.GameOver;
+        return state.Value == State.GameOver;
     }
 
     public bool IsGamePaused()
     {
-        return state == State.GamePaused;
+        return state.Value == State.GamePaused;
     }
 
     public float GetGameStartCountdown()
     {
-        return countdownToStartTimer;
+        return countdownToStartTimer.Value;
     }
 
     public float GetGamePlayingTimerNormalized()
     {
-        return 1 - gamePlayingTimer/k_GamePlayingTimerMax;
+        return 1 - gamePlayingTimer.Value/k_GamePlayingTimerMax;
     }
 
     void GameInputOnPauseAction(object sender, EventArgs e)
@@ -108,23 +113,43 @@ public class GameManager : MonoBehaviour
 
     void GameInputOnInteractAction(object sender, EventArgs e)
     {
-        if (state == State.WaitingToStart)
+        if (state.Value == State.WaitingToStart)
         {
-            // Tutorial is showing, and we just received the interact action, hide tutorial and start game
-            state = State.CountdownToStart;
+            localPlayerReady = true;
+            OnLocalPlayerReady?.Invoke(this, EventArgs.Empty);
+            SetPlayerReadyServerRpc();
         }
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    void SetPlayerReadyServerRpc(RpcParams rpcParams = default)
+    {
+        playersReadyDict[rpcParams.Receive.SenderClientId] = true;
+
+        var allPlayersReady = true;
+        foreach (var clientsId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            if (!playersReadyDict.ContainsKey(clientsId) || !playersReadyDict[clientsId])
+            {
+                allPlayersReady = false;
+                break;
+            }
+        }
+
+        if (allPlayersReady)
+            state.Value = State.CountdownToStart;
     }
 
     public void TogglePauseGame()
     {
-        if (state == State.GamePlaying)
+        if (state.Value == State.GamePlaying)
         {
-            state = State.GamePaused;
+            state.Value = State.GamePaused;
             Time.timeScale = 0;
         }
-        else if (state == State.GamePaused)
+        else if (state.Value == State.GamePaused)
         {
-            state = State.GamePlaying;
+            state.Value = State.GamePlaying;
             Time.timeScale = 1;
         }
     }
