@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,10 +22,13 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
     private float moveSpeed = 7f;
 
     [SerializeField]
-    LayerMask countersLayerMask;
+    LayerMask collisionLayerMask;
 
     [SerializeField]
     Transform playerHandsPoint;
+
+    [SerializeField]
+    List<Vector3> spawnPointsList;
 
     Vector3 lastInteractDir;
     bool isWalking;
@@ -36,6 +40,9 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
         if (IsOwner)
         {
             LocalInstance = this;
+
+            transform.position = spawnPointsList[(int)OwnerClientId];
+
             OnAnyPlayerSpawned?.Invoke(this, EventArgs.Empty);
         }
     }
@@ -88,7 +95,7 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
         }
 
         var interactDistance = 2f;
-        if (Physics.Raycast(transform.position, lastInteractDir, out var raycastHit, interactDistance, countersLayerMask))
+        if (Physics.Raycast(transform.position, lastInteractDir, out var raycastHit, interactDistance, collisionLayerMask))
         {
             if (raycastHit.transform.TryGetComponent(out BaseCounter counter))
             {
@@ -113,13 +120,13 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
         var playerRadius = 0.7f;
         var playerHeight = 2f;
         var moveDistance = moveSpeed * Time.deltaTime;
-        var willCollide = Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDir, moveDistance);
+        var willCollide = Physics.BoxCast(transform.position, Vector3.one * playerRadius, moveDir, Quaternion.identity, moveDistance, collisionLayerMask);
         
         if (willCollide) 
         {
             // Attempt just X movement
             var moveX = new Vector3(moveDir.x, 0, 0).normalized;
-            willCollide = moveDir.x == 0 || Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveX, moveDistance);
+            willCollide = moveDir.x == 0 || Physics.BoxCast(transform.position, Vector3.one * playerRadius, moveX, Quaternion.identity, moveDistance, collisionLayerMask);
             if (!willCollide)
             {
                 moveDir = moveX;
@@ -128,7 +135,7 @@ public class Player : NetworkBehaviour, IKitchenObjectParent
             {
                 // Attempt just Z movement
                 var moveZ = new Vector3(0, 0, moveDir.z).normalized;
-                willCollide = moveDir.z == 0 || Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveZ, moveDistance);
+                willCollide = moveDir.z == 0 || Physics.BoxCast(transform.position, Vector3.one * playerRadius, moveZ, Quaternion.identity, moveDistance, collisionLayerMask);
                 if (!willCollide)
                 {
                     moveDir = moveZ;

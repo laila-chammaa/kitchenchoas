@@ -44,7 +44,8 @@ GameObject:
   - component: {fileID: 4800476229418052187}
   - component: {fileID: 6951554136998395004}
   - component: {fileID: 2997491608452337944}
-  m_Layer: 0
+  - component: {fileID: -2038333017900785588}
+  m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -81,7 +82,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1680106363
+  GlobalObjectIdHash: 2241805414
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -108,10 +109,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   ShowTopMostFoldoutHeaderGroup: 1
   moveSpeed: 7
-  countersLayerMask:
+  collisionLayerMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 192
   playerHandsPoint: {fileID: 3764741337336458629}
+  spawnPointsList:
+  - {x: 1.5, y: 0, z: 0}
+  - {x: 3, y: 0, z: 0}
+  - {x: -1.5, y: 0, z: -2}
+  - {x: -3, y: 0, z: -2}
 --- !u!114 &6951554136998395004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -171,6 +177,27 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!65 &-2038333017900785588
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8234680020246597071}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.05, y: 0.5, z: 1}
+  m_Center: {x: 0, y: 0.25, z: 0}
 --- !u!1001 &356629518627047357
 PrefabInstance:
   m_ObjectHideFlags: 0
